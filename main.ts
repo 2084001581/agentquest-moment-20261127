@@ -27,7 +27,8 @@ const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 const target = join(out, 'entry.txt');
 
 // The gate, checked here before anything is written: 1 to 200 characters,
-// not only white space, a single line.
+// not only white space, a single line, and no leading or trailing white
+// space (a stray space would read as sloppiness to the judge).
 if (LINE.length < 1 || LINE.length > 200) {
   throw new Error(`entry is ${LINE.length} characters, must be 1-200`);
 }
@@ -36,6 +37,9 @@ if (LINE.trim().length === 0) {
 }
 if (LINE.includes('\n') || LINE.includes('\r')) {
   throw new Error('entry must be a single line');
+}
+if (LINE !== LINE.trim()) {
+  throw new Error('entry must not start or end with white space');
 }
 
 mkdirSync(out, { recursive: true });
